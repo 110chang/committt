@@ -21,3 +21,4 @@ nodegit.Repository.open(pathToRepo)
 
     history.start()
   })
+// ref: https://qiita.com/highwide/items/236ab304e74a53cd3854
