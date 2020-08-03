@@ -1,6 +1,12 @@
 const path = require('path')
 const nodegit = require('nodegit')
-const pathToRepo = path.resolve('../mammoth2/.git')
+
+// commanderモジュールをprogramオブジェクトとしてインポートする
+const program = require("commander")
+// コマンドライン引数をパースする
+program.parse(process.argv)
+
+const pathToRepo = path.resolve(program.args[0])
 
 nodegit.Repository.open(pathToRepo)
   .then(function(repo) {
