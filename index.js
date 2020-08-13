@@ -11,7 +11,6 @@ dayjs.extend(timezone)
 
 program
   .version('0.0.1')
-  .usage('[options] <file ...>')
   .option('-a --author <value>', 'Author Name Or Email')
   .requiredOption('-p --path <path>', 'Project Path')
   .option('--from <date>', 'Duration from')
