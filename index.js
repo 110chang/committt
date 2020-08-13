@@ -135,3 +135,4 @@ async function main() {
 main()
 
 // ref: https://qiita.com/highwide/items/236ab304e74a53cd3854
+// ref: https://stackoverflow.com/questions/38335804/getting-all-commits-on-all-branches-with-nodegit
