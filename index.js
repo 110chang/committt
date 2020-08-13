@@ -106,26 +106,30 @@ async function main() {
   console.log('collect commit between:', from, 'to:', to)
 
   const commits = await getAllCommits(author, from, to)
-  let commitsByDay = {}
+  let dateHeaders = []
   commits.forEach((commit) => {
-    const dateKey = dayjs(commit.date).startOf('day').toISOString()
-    if (commitsByDay[dateKey]) {
-      commitsByDay[dateKey].push(commit.date)
+    const dateId = dayjs(commit.date).startOf('day').toISOString()
+    const header = dateHeaders.find(c => c.id === dateId)
+    if (header) {
+      header.dates.push(commit.date)
     } else {
-      commitsByDay[dateKey] = [commit.date]
+      dateHeaders.push({
+        id: dateId,
+        dates: [commit.date],
+      })
     }
-    // console.log(dayjs(commit.date).tz('Asia/Tokyo').format('YYYY/MM/DD HH:mm'))
   })
-  // console.log(commitsByDay)
-  for (let day in commitsByDay) {
-    console.log(dayjs(day).tz('Asia/Tokyo').format('YYYY/MM/DD'))
-    const commitTimes = commitsByDay[day].sort((a, b) => {
-      return a.getTime() - b.getTime()
-    }).map(day => {
-      return dayjs(day).tz('Asia/Tokyo').format('HH:mm')
-    }).join(' ')
+
+  dateHeaders = dateHeaders.sort((a, b) => new Date(a.id).getTime() - new Date(b.id).getTime())
+
+  dateHeaders.forEach((header) => {
+    console.log(`--- ${dayjs(header.id).tz('Asia/Tokyo').format('YYYY/MM/DD')} ---`)
+    const commitTimes = header.dates.sort((a, b) => a.getTime() - b.getTime())
+      .map((date) => dayjs(date).tz('Asia/Tokyo').format('HH:mm'))
+      .filter((e, i, a) => a.indexOf(e) === i)
+      .join(' ')
     console.log(`| ${commitTimes} |`)
-  }
+  })
 }
 
 main()
