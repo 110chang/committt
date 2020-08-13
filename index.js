@@ -54,25 +54,46 @@ async function getDefaultEmail() {
   return await defaultConfig.getStringBuf('user.email')
 }
 
-async function getCommitData(author, from, to) {
-  let data = []
+// async function getCommitsOf(branchName, author, from, to) {
+//   let data = []
+//   const repo = await nodegit.Repository.open(pathToRepo)
+//   const firstCommit = await repo.getBranchCommit(branchName)
+//   const history = firstCommit.history(nodegit.Revwalk.SORT.TIME)
+//   const commits = await new Promise((resolve) => {
+//     history.on('commit', async (commit) => {
+//       const date = commit.date()
+//       const name = commit.author().name()
+//       const email = commit.author().email()
+//       if (author !== name && author !== email) return
+//       if (!dayjs(date).isBetween(from, to)) return
+//       data.push({ date, sha: commit.sha(), name, email })
+//     })
+//     history.on('end', commits => resolve(commits))
+//     history.start()
+//   })
+//   console.log(data.length, 'of', commits.length, 'commits are found')
+//   return data
+// }
+
+async function getAllCommits(author, from, to) {
   const repo = await nodegit.Repository.open(pathToRepo)
-  const firstCommit = await repo.getBranchCommit('develop')
-  const history = firstCommit.history(nodegit.Revwalk.SORT.TIME)
-  const commits = await new Promise((resolve) => {
-    history.on('commit', async (commit) => {
-      const date = commit.date()
-      const name = commit.author().name()
-      const email = commit.author().email()
-      if (author !== name && author !== email) return
-      if (!dayjs(date).isBetween(from, to)) return
-      data.push({ date, sha: commit.sha(), name, email })
-    })
-    history.on('end', commits => resolve(commits))
-    history.start()
+  const walker = nodegit.Revwalk.create(repo)
+  walker.pushGlob('refs/heads/*')
+  // walker.pushHead()
+  const allCommits = await walker.getCommitsUntil(commits => true)
+  const commits = allCommits.filter((commit) => {
+    const date = commit.date()
+    const name = commit.author().name()
+    const email = commit.author().email()
+    return (author === name || author === email) && dayjs(date).isBetween(from, to)
+  }).map((commit) => {
+    const date = commit.date()
+    const name = commit.author().name()
+    const email = commit.author().email()
+    return { date, sha: commit.sha(), name, email }
   })
-  console.log(data.length, 'of', commits.length, 'commits are found')
-  return data
+  console.log(commits.length, 'of', allCommits.length, 'commits are found')
+  return commits
 }
 
 async function main() {
@@ -83,7 +104,8 @@ async function main() {
   console.log('collect commit by user:', author, 'from', pathToRepo)
   const { from, to } = createDuration(fromDate, toDate)
   console.log('collect commit between:', from, 'to:', to)
-  const commits = await getCommitData(author, from, to)
+
+  const commits = await getAllCommits(author, from, to)
   let commitsByDay = {}
   commits.forEach((commit) => {
     const dateKey = dayjs(commit.date).startOf('day').toISOString()
