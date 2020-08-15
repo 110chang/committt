@@ -2,12 +2,10 @@ const path = require('path')
 const nodegit = require('nodegit')
 const program = require('commander')
 const dayjs = require('dayjs')
-const isBetween = require('dayjs/plugin/isBetween')
-const utc = require('dayjs/plugin/utc') // dependent on utc plugin
-const timezone = require('dayjs/plugin/timezone')
-dayjs.extend(isBetween)
-dayjs.extend(utc)
-dayjs.extend(timezone)
+
+dayjs.extend(require('dayjs/plugin/isBetween'))
+dayjs.extend(require('dayjs/plugin/utc'))
+dayjs.extend(require('dayjs/plugin/timezone'))
 
 program
   .version('0.0.1')
@@ -17,6 +15,8 @@ program
   .option('--to <date>', 'Duration to')
   .parse(process.argv)
 
+
+const defaultTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 const authorNameOrEmail = program.author
 const pathToRepo = path.resolve(program.path)
 const fromDate = program.from
@@ -122,9 +122,9 @@ async function main() {
   dateHeaders = dateHeaders.sort((a, b) => new Date(a.id).getTime() - new Date(b.id).getTime())
 
   dateHeaders.forEach((header) => {
-    console.log(`--- ${dayjs(header.id).tz('Asia/Tokyo').format('YYYY/MM/DD')} ---`)
+    console.log(`--- ${dayjs(header.id).tz(defaultTimezone).format('YYYY/MM/DD')} ---`)
     const commitTimes = header.dates.sort((a, b) => a.getTime() - b.getTime())
-      .map((date) => dayjs(date).tz('Asia/Tokyo').format('HH:mm'))
+      .map((date) => dayjs(date).tz(defaultTimezone).format('HH:mm'))
       .filter((e, i, a) => a.indexOf(e) === i)
       .join(' ')
     console.log(`| ${commitTimes} |`)
