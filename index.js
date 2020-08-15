@@ -62,11 +62,11 @@ async function getAuthor(nameOrEmail) {
 //   return data
 // }
 
-async function getAllCommits(author, from, to) {
+async function getAllCommits() {
   const repo = await nodegit.Repository.open(pathToRepo)
   const walker = nodegit.Revwalk.create(repo)
   walker.pushGlob('refs/heads/*')
-  return await walker.getCommitsUntil(commits => true)
+  return await walker.getCommitsUntil(() => true)
 }
 
 function filterCommits(commits, author, from, to) {
@@ -83,34 +83,50 @@ function filterCommits(commits, author, from, to) {
   })
 }
 
+function outputFoundMessage(found, total, month) {
+  const foundMsg = colors.cyan(found)
+  const totalMsg = colors.cyan(total)
+  const monthMsg = colors.cyan(dayjs(month).format('YYYY/MM'))
+  console.log(`${foundMsg} of ${totalMsg} commits are found in ${monthMsg}`)
+}
+
+function outputDateRow(date, timesStr) {
+  const dateMsg = colors.green(dayjs(date).tz(defaultTimezone).format('YYYY/MM/DD'))
+  console.log(`${dateMsg} | ${colors.yellow(timesStr)} |`)
+}
+
+function outputBlankLine() {
+  console.log()
+}
+
 async function main() {
   const author = await getAuthor(userNameOrEmail)
   const { from, to } = createDuration(targetMonth)
-  const allCommits = await getAllCommits(author, from, to)
+  const allCommits = await getAllCommits()
   const commits = filterCommits(allCommits, author, from, to)
 
-  console.log(`${colors.cyan(commits.length)} of ${colors.cyan(allCommits.length)} commits are found in ${colors.cyan(dayjs(targetMonth).format('YYYY/MM'))}`)
+  outputFoundMessage(commits.length, allCommits.length, targetMonth)
 
-  let dateHeaders = []
+  let rows = []
   commits.forEach((commit) => {
-    const dateId = dayjs(commit.date).startOf('day').toISOString()
-    const header = dateHeaders.find(c => c.id === dateId)
-    if (header) {
-      header.dates.push(commit.date)
+    const ISODate = dayjs(commit.date).startOf('day').toISOString()
+    const existingRow = rows.find(r => r.ISODate === ISODate)
+    if (existingRow) {
+      existingRow.timetable.push(commit.date)
     } else {
-      dateHeaders.push({ id: dateId, dates: [commit.date] })
+      rows.push({ ISODate, timetable: [commit.date] })
     }
   })
-  console.log()
-  dateHeaders.sort((a, b) => new Date(a.id).getTime() - new Date(b.id).getTime()).forEach((header) => {
-    // console.log(`--- ${dayjs(header.id).tz(defaultTimezone).format('YYYY/MM/DD')} ---`)
-    const commitTimes = header.dates.sort((a, b) => a.getTime() - b.getTime())
+  outputBlankLine()
+  rows.sort((a, b) => new Date(a.ISODate).getTime() - new Date(b.ISODate).getTime()).forEach((row) => {
+    const commitTimes = row.timetable.sort((a, b) => a.getTime() - b.getTime())
       .map((date) => dayjs(date).tz(defaultTimezone).format('HH:mm'))
       .filter((e, i, a) => a.indexOf(e) === i)
       .join(' ')
-    console.log(`${colors.green(dayjs(header.id).tz(defaultTimezone).format('YYYY/MM/DD'))} | ${colors.yellow(commitTimes)} |`)
+
+    outputDateRow(row.ISODate, commitTimes)
   })
-  console.log()
+  outputBlankLine()
 }
 
 main()
