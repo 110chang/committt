@@ -1,6 +1,7 @@
 const path = require('path')
 const nodegit = require('nodegit')
 const program = require('commander')
+const colors = require('colors')
 const dayjs = require('dayjs')
 
 dayjs.extend(require('dayjs/plugin/isBetween'))
@@ -9,43 +10,32 @@ dayjs.extend(require('dayjs/plugin/timezone'))
 
 program
   .version('0.0.1')
-  .option('-a --author <value>', 'Author Name Or Email')
+  .option('-u --user <value>', 'Author Name Or Email')
   .requiredOption('-p --path <path>', 'Project Path')
-  .option('--from <date>', 'Duration from')
-  .option('--to <date>', 'Duration to')
+  .option('-t --target <date>', 'Target month like `2020/01`')
   .parse(process.argv)
 
 
 const defaultTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 const authorNameOrEmail = program.author
 const pathToRepo = path.resolve(program.path)
-const fromDate = program.from
-const toDate = program.to
+const targetMonth = program.target
 // console.log('--author:', authorNameOrEmail)
 // console.log('--path:', pathToRepo)
 // console.log('--from:', program.from)
 // console.log('--to:', program.to)
 
-function createDuration(fromStr, toStr) {
+function createDuration(targetMonth) {
   let to, from;
-  if (!fromStr && !toStr) {
+  if (!targetMonth) {
     from = dayjs().startOf('month')
     to = dayjs().endOf('month')
-  } else if (fromStr && !toStr) {
-    from = dayjs(fromStr).startOf('month')
-    to = dayjs(from).endOf('month')
-  } else if (!fromStr && toStr) {
-    to = dayjs(toStr).endOf('month')
-    from = dayjs(to).startOf('month')
   } else {
-    from = dayjs(fromStr).startOf('month')
-    to = dayjs(toStr).endOf('month')
+    from = dayjs(targetMonth).startOf('month')
+    to = dayjs(targetMonth).endOf('month')
   }
 
-  return {
-    from: from.toDate(),
-    to: to.toDate(),
-  }
+  return { from, to }
 }
 
 async function getDefaultEmail() {
@@ -100,9 +90,9 @@ async function main() {
   if (authorNameOrEmail) {
     author = authorNameOrEmail
   }
-  console.log('collect commit by user:', author, 'from', pathToRepo)
-  const { from, to } = createDuration(fromDate, toDate)
-  console.log('collect commit between:', from, 'to:', to)
+  // console.log('collect commit by user:', author, 'from', pathToRepo)
+  const { from, to } = createDuration(targetMonth)
+  console.log('Collect commits between:', from.format('YYYY/MM/DD'), 'to:', to.format('YYYY/MM/DD'))
 
   const commits = await getAllCommits(author, from, to)
   let dateHeaders = []
@@ -122,12 +112,12 @@ async function main() {
   dateHeaders = dateHeaders.sort((a, b) => new Date(a.id).getTime() - new Date(b.id).getTime())
 
   dateHeaders.forEach((header) => {
-    console.log(`--- ${dayjs(header.id).tz(defaultTimezone).format('YYYY/MM/DD')} ---`)
+    // console.log(`--- ${dayjs(header.id).tz(defaultTimezone).format('YYYY/MM/DD')} ---`)
     const commitTimes = header.dates.sort((a, b) => a.getTime() - b.getTime())
       .map((date) => dayjs(date).tz(defaultTimezone).format('HH:mm'))
       .filter((e, i, a) => a.indexOf(e) === i)
       .join(' ')
-    console.log(`| ${commitTimes} |`)
+    console.log(`${colors.green(dayjs(header.id).tz(defaultTimezone).format('YYYY/MM/DD'))} | ${colors.yellow(commitTimes)} |`)
   })
 }
 

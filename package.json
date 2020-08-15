@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "colors": "^1.4.0",
     "commander": "^6.0.0",
     "dayjs": "^1.8.33",
     "nodegit": "^0.27.0"
