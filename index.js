@@ -71,12 +71,12 @@ async function getAllCommits() {
 
 function filterCommits(commits, author, from, to) {
   return commits.filter((commit) => {
-    const date = commit.date()
+    const date = new Date(commit.author().when().time() * 1000)
     const name = commit.author().name()
     const email = commit.author().email()
     return (author === name || author === email) && dayjs(date).isBetween(from, to)
   }).map((commit) => {
-    const date = commit.date()
+    const date = new Date(commit.author().when().time() * 1000)
     const name = commit.author().name()
     const email = commit.author().email()
     return { date, sha: commit.sha(), name, email }
