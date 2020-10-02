@@ -1,8 +1,13 @@
 {
-  "name": "git_worker",
-  "version": "1.0.0",
+  "name": "gittt",
+  "version": "0.0.1",
+  "description": "Display the commit date and time of a month in a table",
   "main": "index.js",
+  "author": "Yuji ito <u@110chang.com>",
   "license": "MIT",
+  "bin": {
+    "gittt": "bin/gittt.js"
+  },
   "dependencies": {
     "colors": "^1.4.0",
     "commander": "^6.0.0",
