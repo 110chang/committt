@@ -32,9 +32,7 @@ async function getDefaultEmail() {
   return await defaultConfig.getStringBuf('user.email')
 }
 
-async function getAuthor(nameOrEmail) {
-  if (nameOrEmail) return nameOrEmail
-
+async function getAuthor() {
   const author = await getDefaultEmail()
   console.log(`Author not specified. Using email ${author} from global config`.grey)
   return author
@@ -99,7 +97,7 @@ function outputBlankLine() {
 }
 
 async function main() {
-  const author = await getAuthor(userNameOrEmail)
+  const author = userNameOrEmail ? userNameOrEmail : await getAuthor()
   const { from, to } = createDuration(targetMonth)
   const allCommits = await getAllCommits()
   const commits = filterCommits(allCommits, author, from, to)
