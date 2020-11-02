@@ -38,27 +38,6 @@ async function getAuthor() {
   return author
 }
 
-// async function getCommitsOf(branchName, author, from, to) {
-//   let data = []
-//   const repo = await nodegit.Repository.open(pathToRepo)
-//   const firstCommit = await repo.getBranchCommit(branchName)
-//   const history = firstCommit.history(nodegit.Revwalk.SORT.TIME)
-//   const commits = await new Promise((resolve) => {
-//     history.on('commit', async (commit) => {
-//       const date = commit.date()
-//       const name = commit.author().name()
-//       const email = commit.author().email()
-//       if (author !== name && author !== email) return
-//       if (!dayjs(date).isBetween(from, to)) return
-//       data.push({ date, sha: commit.sha(), name, email })
-//     })
-//     history.on('end', commits => resolve(commits))
-//     history.start()
-//   })
-//   console.log(data.length, 'of', commits.length, 'commits are found')
-//   return data
-// }
-
 async function getAllCommits() {
   const repo = await nodegit.Repository.open(pathToRepo)
   const walker = nodegit.Revwalk.create(repo)
@@ -92,18 +71,15 @@ function outputDateRow(date, timesStr) {
   console.log(`${dateMsg} | ${colors.yellow(timesStr)} |`)
 }
 
+function outputTimeTable(rows = []) {
+  rows.forEach(row => outputDateRow(row.date, row.commitTimes))
+}
+
 function outputBlankLine() {
   console.log()
 }
 
-async function main() {
-  const author = userNameOrEmail ? userNameOrEmail : await getAuthor()
-  const { from, to } = createDuration(targetMonth)
-  const allCommits = await getAllCommits()
-  const commits = filterCommits(allCommits, author, from, to)
-
-  outputFoundMessage(commits.length, allCommits.length, targetMonth)
-
+function createTimeTableFrom(commits) {
   let rows = []
   commits.forEach((commit) => {
     const ISODate = dayjs(commit.date).startOf('day').toISOString()
@@ -114,15 +90,31 @@ async function main() {
       rows.push({ ISODate, timetable: [commit.date] })
     }
   })
-  outputBlankLine()
-  rows.sort((a, b) => new Date(a.ISODate).getTime() - new Date(b.ISODate).getTime()).forEach((row) => {
+
+  rows = rows.sort((a, b) => new Date(a.ISODate).getTime() - new Date(b.ISODate).getTime()).map((row) => {
     const commitTimes = row.timetable.sort((a, b) => a.getTime() - b.getTime())
       .map((date) => dayjs(date).tz(defaultTimezone).format('HH:mm'))
       .filter((e, i, a) => a.indexOf(e) === i)
       .join(' ')
 
-    outputDateRow(row.ISODate, commitTimes)
+    return {
+      ...row,
+      commitTimes,
+    }
   })
+
+  return rows;
+}
+
+async function main() {
+  const author = userNameOrEmail ? userNameOrEmail : await getAuthor()
+  const { from, to } = createDuration(targetMonth)
+  const allCommits = await getAllCommits()
+  const commits = filterCommits(allCommits, author, from, to)
+
+  outputFoundMessage(commits.length, allCommits.length, targetMonth)
+  outputBlankLine()
+  outputTimeTable(createTimeTableFrom(commits))
   outputBlankLine()
 }
 
