@@ -1,6 +1,6 @@
 {
   "name": "committt",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Display the commit date and time of a month in a table",
   "main": "index.js",
   "author": "Yuji ito <u@110chang.com>",
