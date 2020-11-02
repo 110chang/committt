@@ -2,6 +2,7 @@
   "name": "committt",
   "version": "0.0.7",
   "description": "Display the commit date and time of a month in a table",
+  "keywords": ["git", "node", "command"],
   "main": "index.js",
   "author": "Yuji ito <u@110chang.com>",
   "license": "MIT",
