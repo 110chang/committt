@@ -26,3 +26,8 @@ Options:
 2020/10/16 | 18:31 19:31 |
 2020/10/30 | 11:11 14:09 14:57 15:04 17:49 18:18 18:20 19:05 19:16 |
 ```
+
+# Acknowledgments
+
+- https://qiita.com/highwide/items/236ab304e74a53cd3854
+- https://stackoverflow.com/questions/38335804/getting-all-commits-on-all-branches-with-nodegit
