@@ -13,6 +13,9 @@
   "bin": {
     "committt": "bin/committt.js"
   },
+  "scripts": {
+    "start": "node ./bin/committt.js"
+  },
   "dependencies": {
     "colors": "^1.4.0",
     "commander": "^6.0.0",
