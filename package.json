@@ -6,7 +6,7 @@
   "author": "Yuji ito <u@110chang.com>",
   "license": "MIT",
   "bin": {
-    "gittt": "bin/gittt.js"
+    "gittt": "bin/committt.js"
   },
   "dependencies": {
     "colors": "^1.4.0",
