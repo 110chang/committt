@@ -1,15 +1,21 @@
+const fs = require('fs')
 const path = require('path')
 const nodegit = require('nodegit')
 const program = require('commander')
 const colors = require('colors')
 const dayjs = require('dayjs')
 
+function getVersion() {
+  const json = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+  return json && json.version ? json.version : '0.0.1';
+}
+
 dayjs.extend(require('dayjs/plugin/isBetween'))
 dayjs.extend(require('dayjs/plugin/utc'))
 dayjs.extend(require('dayjs/plugin/timezone'))
 
 program
-  .version('0.0.1')
+  .version(getVersion())
   .option('-u --user <value>', 'Author Name Or Email')
   .requiredOption('-p --path <path>', 'Project Path')
   .option('-t --target <date>', 'Target month like `2020/01`')
