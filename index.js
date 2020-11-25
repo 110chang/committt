@@ -78,7 +78,7 @@ function outputDateRow(date, timesStr) {
 }
 
 function outputTimeTable(rows = []) {
-  rows.forEach(row => outputDateRow(row.date, row.commitTimes))
+  rows.forEach(row => outputDateRow(row.ISODate, row.commitTimes))
 }
 
 function outputBlankLine() {
