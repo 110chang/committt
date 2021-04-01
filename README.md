@@ -27,11 +27,11 @@ Options:
 2020/10/30 | 11:11 14:09 14:57 15:04 17:49 18:18 18:20 19:05 19:16 |
 ```
 
-## Development
-Exec myself
+## Test locally
 
 ```sh
-$ npm start -- --path .
+$ npm link
+$ committt -p .
 ```
 
 # Acknowledgments
