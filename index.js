@@ -115,7 +115,6 @@ function createTimeTableFrom(commits) {
 
 async function main() {
   const author = userNameOrEmail ? userNameOrEmail : await getAuthor()
-  console.log(author)
   const { from, to } = createDuration(targetMonth)
   const allCommits = await getAllCommits()
   const commits = filterCommits(allCommits, author, from, to)
