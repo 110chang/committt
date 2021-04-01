@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const nodegit = require('nodegit')
-const program = require('commander')
+const { program } = require('commander')
 const colors = require('colors')
 const dayjs = require('dayjs')
 
@@ -16,15 +16,16 @@ dayjs.extend(require('dayjs/plugin/timezone'))
 
 program
   .version(getVersion())
-  .option('-u --user <value>', 'Author Name Or Email')
-  .requiredOption('-p --path <path>', 'Project Path')
-  .option('-t --target <date>', 'Target month like `2020/01`')
-  .parse(process.argv)
+  .option('-u, --user <value>', 'Author Name Or Email')
+  .requiredOption('-p, --path <path>', 'Project Path')
+  .option('-t, --target <date>', 'Target month like `2020/01`')
+  .parse()
 
+const options = program.opts();
 const defaultTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-const userNameOrEmail = program.user
-const pathToRepo = path.resolve(program.path)
-const targetMonth = program.target
+const userNameOrEmail = options.user
+const pathToRepo = path.resolve(options.path)
+const targetMonth = options.target
 
 function createDuration(targetMonth) {
   const from = dayjs(targetMonth).startOf('month')
@@ -114,6 +115,7 @@ function createTimeTableFrom(commits) {
 
 async function main() {
   const author = userNameOrEmail ? userNameOrEmail : await getAuthor()
+  console.log(author)
   const { from, to } = createDuration(targetMonth)
   const allCommits = await getAllCommits()
   const commits = filterCommits(allCommits, author, from, to)

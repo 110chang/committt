@@ -13,12 +13,15 @@
   "bin": {
     "committt": "bin/committt.js"
   },
+  "engines": {
+    "node": ">=12"
+  },
   "scripts": {
     "start": "node ./bin/committt.js"
   },
   "dependencies": {
     "colors": "^1.4.0",
-    "commander": "^6.0.0",
+    "commander": "^7.2.0",
     "dayjs": "^1.10.4",
     "nodegit": "^0.27.0"
   }
