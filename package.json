@@ -1,6 +1,6 @@
 {
   "name": "committt",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Display the commit date and time of a month in a table",
   "keywords": [
     "git",
