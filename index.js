@@ -1,7 +1,8 @@
 const path = require('path')
 const { program } = require('commander')
 const dayjs = require('dayjs')
-const Utils = require('./src/Utils.js')
+const Output = require('./src/output.js')
+const Utils = require('./src/utils.js')
 
 dayjs.extend(require('dayjs/plugin/isBetween'))
 dayjs.extend(require('dayjs/plugin/utc'))
@@ -23,10 +24,10 @@ async function main() {
   const allCommits = await Utils.getAllCommits(path.resolve(options.path))
   const commits = Utils.filterCommits(allCommits, author, from, to)
 
-  Utils.outputFoundMessage(commits.length, allCommits.length, options.target)
-  Utils.outputBlankLine()
-  Utils.outputTimeTable(Utils.createTimeTableFrom(commits))
-  Utils.outputBlankLine()
+  Output.outputFoundMessage(commits.length, allCommits.length, options.target)
+  Output.outputBlankLine()
+  Output.outputTimeTable(Utils.createTimeTableFrom(commits))
+  Output.outputBlankLine()
 }
 
 module.exports = main;
