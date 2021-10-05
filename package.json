@@ -21,8 +21,8 @@
   },
   "dependencies": {
     "colors": "^1.4.0",
-    "commander": "^7.2.0",
-    "dayjs": "^1.10.4",
+    "commander": "^8.2.0",
+    "dayjs": "^1.10.7",
     "nodegit": "^0.27.0"
   }
 }
