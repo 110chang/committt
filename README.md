@@ -10,9 +10,9 @@ Usage: committt [options]
 
 Options:
   -V, --version       output the version number
-  -u --user <value>   Author Name Or Email
-  -p --path <path>    Project Path
-  -t --target <date>  Target month like `2020/01`
+  -u, --user <value>  Author Name Or Email
+  -p, --path <path>   Project Path
+  -d, --date <date>   ISO 8601 format date like `2020-01`
   -h, --help          display help for command
 ```
 
