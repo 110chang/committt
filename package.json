@@ -14,15 +14,15 @@
     "committt": "bin/committt.js"
   },
   "engines": {
-    "node": ">=12"
+    "node": ">=14.x"
   },
   "scripts": {
     "start": "node ./bin/committt.js"
   },
   "dependencies": {
     "colors": "^1.4.0",
-    "commander": "^8.2.0",
-    "dayjs": "^1.10.7",
+    "commander": "^9.2.0",
+    "dayjs": "^1.11.1",
     "nodegit": "^0.27.0"
   }
 }
