@@ -1,3 +1,5 @@
-module.export = {
-  defaultTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+export const defaultTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+export default {
+  defaultTimezone,
 }

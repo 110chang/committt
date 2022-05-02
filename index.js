@@ -1,12 +1,10 @@
-const path = require('path')
-const { program } = require('commander')
-const dayjs = require('dayjs')
-const Output = require('./src/output.js')
-const Utils = require('./src/utils.js')
+import path from 'path'
+import { program } from 'commander'
+import Output from './src/output.js'
+import Utils from './src/utils.js'
 
-dayjs.extend(require('dayjs/plugin/isBetween'))
-dayjs.extend(require('dayjs/plugin/utc'))
-dayjs.extend(require('dayjs/plugin/timezone'))
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 
 program
   .version(require('./package.json').version)
@@ -30,5 +28,4 @@ async function main() {
   Output.outputBlankLine()
 }
 
-module.exports = main;
-module.exports.default = main;
+export default main;

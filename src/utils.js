@@ -1,10 +1,13 @@
-const nodegit = require('nodegit')
-const dayjs = require('dayjs')
-const { defaultTimezone } = require('./config.js')
+import nodegit from 'nodegit'
+import dayjs from 'dayjs'
+import { defaultTimezone } from './config.js'
 
-dayjs.extend(require('dayjs/plugin/isBetween'))
-dayjs.extend(require('dayjs/plugin/utc'))
-dayjs.extend(require('dayjs/plugin/timezone'))
+import isBetween from 'dayjs/plugin/isBetween.js'
+import utc from 'dayjs/plugin/utc.js'
+import timezone from 'dayjs/plugin/timezone.js'
+dayjs.extend(isBetween)
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 class Utils {
   static createDuration(date) {
@@ -74,5 +77,4 @@ class Utils {
   }
 }
 
-module.exports = Utils;
-module.exports.default = Utils;
+export default Utils;

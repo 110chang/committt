@@ -10,17 +10,18 @@
   "main": "index.js",
   "author": "Yuji ito <u@110chang.com>",
   "license": "MIT",
+  "type": "module",
   "bin": {
     "committt": "bin/committt.js"
   },
   "engines": {
-    "node": ">=14.x"
+    "node": "14.x"
   },
   "scripts": {
     "start": "node ./bin/committt.js"
   },
   "dependencies": {
-    "colors": "^1.4.0",
+    "chalk": "^5.0.1",
     "commander": "^9.2.0",
     "dayjs": "^1.11.1",
     "nodegit": "^0.27.0"
